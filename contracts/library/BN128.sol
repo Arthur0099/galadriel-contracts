@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0 <0.6.0;
+pragma solidity ^0.7.0;
 
 library BN128 {
     // uint256 public constant q = 21888242871839275222246405745257275088548364400416034343698204186575808495617; // curve order
@@ -176,6 +176,8 @@ library BN128 {
     }
 
     function xToPoint(uint256 x, bool ybit) internal view returns (G1Point memory out) {
+        // zero point
+        if (x == 0) return G1Point(0, 0);
         uint256 p = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
 
         uint256 xxx = mulmod(x, x, p);

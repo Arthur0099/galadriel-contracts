@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0 <0.6.0;
+pragma solidity ^0.7.0;
 
 import './library/BN128.sol';
 import './PublicParams.sol';
@@ -163,7 +163,7 @@ contract PGC {
         address params_,
         address verifier_,
         address tokenConverter_
-    ) public {
+    ) {
         verifier = Verifier(verifier_);
         tokenConverter = TokenConverter(tokenConverter_);
         params = PublicParams(params_);
@@ -239,7 +239,7 @@ contract PGC {
     }
 
     function depositAccountETH(bytes memory publicKey) public payable returns (bool) {
-        depositAccount(publicKey, address(0), 0);
+        return depositAccount(publicKey, address(0), 0);
     }
 
     /*
@@ -267,7 +267,7 @@ contract PGC {
         CT memory pb = encrypt(pgcAmount, pk);
         toBalanceOrPending(pb, pk.X, pk.Y, uint256(tokenAddr));
 
-        emit LogDepositAccount(msg.sender, tokenAddr, pk.X, pk.Y, pgcAmount, now);
+        emit LogDepositAccount(msg.sender, tokenAddr, pk.X, pk.Y, pgcAmount, block.timestamp);
 
         return true;
     }
@@ -277,7 +277,7 @@ contract PGC {
         uint256[10] memory scalar,
         bytes memory lr
     ) public returns (bool) {
-        aggTransfer(points, scalar, 0, lr);
+        return aggTransfer(points, scalar, 0, lr);
     }
 
     /*
@@ -371,7 +371,7 @@ contract PGC {
         b.aggCT[5] = ps[4].Y;
         b.aggCT[6] = ps[5].X;
         b.aggCT[7] = ps[5].Y;
-        emit LogAggTransfer(msg.sender, address(token), b.fromto, b.aggCT, now);
+        emit LogAggTransfer(msg.sender, address(token), b.fromto, b.aggCT, block.timestamp);
 
         return true;
     }
@@ -401,7 +401,7 @@ contract PGC {
         bytes memory points,
         uint256 z
     ) public returns (bool) {
-        burn(receiver, 0, amount, points, z);
+        return burn(receiver, 0, amount, points, z);
     }
 
     /*
@@ -454,7 +454,9 @@ contract PGC {
             );
         }
 
-        emit LogBurn(msg.sender, receiver, address(token), ps[0].X, ps[1].Y, amount, now);
+        emit LogBurn(msg.sender, receiver, address(token), ps[0].X, ps[1].Y, amount, block.timestamp);
+
+        return true;
     }
 
     /*

@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0 <0.6.0;
+pragma solidity ^0.7.0;
 import './library/BN128.sol';
 
 contract PublicParams {
@@ -29,7 +29,7 @@ contract PublicParams {
     BN128.G1Point public pkauth;
 
     // todo: all params should pass by constructor
-    constructor(uint256 pkx, uint256 pky) public {
+    constructor(uint256 pkx, uint256 pky) {
         // set h generator.
         // this should be the first step to set which will be used to
         // generate generator point.

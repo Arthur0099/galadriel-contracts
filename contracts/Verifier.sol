@@ -1,8 +1,9 @@
-pragma solidity >=0.5.0 <0.6.0;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import './library/BN128.sol';
 import './PublicParams.sol';
+import "hardhat/console.sol";
 
 // response for verifying all proofs.
 contract Verifier {
@@ -134,7 +135,7 @@ contract Verifier {
         uint256 bp;
     }
 
-    constructor(address params_) public {
+    constructor(address params_) {
         params = PublicParams(params_);
 
         uint256[2] memory tmpH = params.getH();
@@ -156,7 +157,7 @@ contract Verifier {
         init(32);
     }
 
-    function init(uint256 step) public {
+    function init(uint256 _step) public {
         uint256 i = 0;
         for (; i < vectorSize; i++) {
             if (gVector[i].X == 0) {
@@ -165,7 +166,7 @@ contract Verifier {
         }
 
         if (i < gVector.length) {
-            initVector(i, i + step);
+            initVector(i, i + _step);
         }
     }
 
@@ -308,10 +309,10 @@ contract Verifier {
         require(verifyCTValidProof(state.pk1, state.refresh, proof.ctvProof), 'ct valid proof invalid');
 
         // verify agg range proof.
-        BN128.G1Point[2] memory commit;
-        commit[0] = state.mrct.Y;
-        commit[1] = state.refresh.Y;
-        require(verifyAggRangeProof(commit, proof.aggProof), 'aggrate range proof invalid');
+        BN128.G1Point[2] memory commit_;
+        commit_[0] = state.mrct.Y;
+        commit_[1] = state.refresh.Y;
+        require(verifyAggRangeProof(commit_, proof.aggProof), 'aggrate range proof invalid');
 
         return true;
     }
@@ -450,7 +451,6 @@ contract Verifier {
         }
 
         uint256 xu = uint256(keccak256(abi.encodePacked(proof.t))).mod();
-
         // commit.
         // a: commit: 2*(vectorSize mul, vectorSize - 1 add).
         // b: normal: 3 add, 2 mul.
